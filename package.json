@@ -2,9 +2,15 @@
   "name": "vue-validator",
   "version": "0.0.1",
   "description": "vue form validator",
-  "main": "index.js",
+  "main": "dist/vue-validator.es.js",
+  "browser": "dist/vue-validator.umd.js",
+  "module": "dist/vue-validator.es.js",
+  "cjs": "dist/vue-validator.cjs.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c -w",
+    "build": "rm -rf dist && rollup -c",
+    "minify": "uglifyjs $npm_package_browser -cm -o $npm_package_browser"
   },
   "repository": {
     "type": "git",
@@ -25,6 +31,9 @@
   "devDependencies": {
     "ava": "^0.25.0",
     "rollup": "^0.56.2",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-json": "^2.3.0",
+    "uglify-js": "^3.3.11",
     "vue": "^2.5.13"
   }
 }
