@@ -1,0 +1,30 @@
+{
+  "name": "vue-validator",
+  "version": "0.0.1",
+  "description": "vue form validator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiubao/vue-validator.git"
+  },
+  "keywords": [
+    "vue",
+    "validate",
+    "validator",
+    "validation"
+  ],
+  "author": "jiubao <xia.ldj@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jiubao/vue-validator/issues"
+  },
+  "homepage": "https://github.com/jiubao/vue-validator#readme",
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "rollup": "^0.56.2",
+    "vue": "^2.5.13"
+  }
+}
