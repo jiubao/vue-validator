@@ -1,19 +1,14 @@
 import allRules from './rules'
-import {on, off, addClass, removeClass, emptyFn} from './utils'
+import {on, off, emptyFn} from './utils'
 import config from './config'
 
-// const events = ['input']
-// const defaultErrorClass = 'bln-validate-fail'
 const validators = []
-// window.validators = []
 
 export default class Validator {
   constructor (el, rules) {
-    // config = config || {}
     this.el = el
     this.rules = rules || []
     this.pass = true
-    // this.errorClass = config.errorClass
     this.onError = config.onError || emptyFn
     this.onSuccess = config.onSuccess || emptyFn
     this._validate = this.validate.bind(this)
