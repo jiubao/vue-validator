@@ -50,6 +50,11 @@
             <input v-validator="ruleIDCard" type="text" name="" value="">
           </td>
         </tr>
+        <tr>
+          <td colspan="2">
+            <button type="button" :disabled="formFailed" name="button">submit</button>
+          </td>
+        </tr>
       </table>
     </div>
 

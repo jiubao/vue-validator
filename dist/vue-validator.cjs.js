@@ -1,5 +1,13 @@
 'use strict';
 
+var mixin = {
+  data: function data () {
+    return {
+      formFailed: true
+    }
+  }
+};
+
 var isArray = Array.isArray;
 
 var emptyFn = function () {};
@@ -78,9 +86,10 @@ var Validator = function Validator (el, rules$$1, key, vm) {
   this.key = key;
   this.vm = vm;
 
-  this.pass = true;
+  this.pass = false;
   this.onError = config.onError || emptyFn;
   this.onSuccess = config.onSuccess || emptyFn;
+  this.validate();
   this._validate = this.validate.bind(this);
 
   this.bind();
@@ -107,6 +116,7 @@ Validator.prototype.validate = function validate () {
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   this.pass ? this.onSuccess(this) : this.onError(this);
+  this.vm.formFailed = validators.some(function (v) { return !v.pass; });
   return this.pass
 };
 
@@ -156,6 +166,7 @@ function getBindingKey (vnode) {
 
 function install (vue, options) {
   options && config$1(options);
+  vue.mixin(mixin);
   vue.directive('validator', directive);
   vue.prototype.$$validators = Validator.all;
 }

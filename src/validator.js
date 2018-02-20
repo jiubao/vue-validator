@@ -11,9 +11,10 @@ export default class Validator {
     this.key = key
     this.vm = vm
 
-    this.pass = true
+    this.pass = false
     this.onError = config.onError || emptyFn
     this.onSuccess = config.onSuccess || emptyFn
+    this.validate()
     this._validate = this.validate.bind(this)
 
     this.bind()
@@ -36,6 +37,7 @@ export default class Validator {
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     this.pass ? this.onSuccess(this) : this.onError(this)
+    this.vm.formFailed = validators.some(v => !v.pass)
     return this.pass
   }
 

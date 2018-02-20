@@ -54,6 +54,9 @@ var app = new Vue({
         key: 'idcard'
       }]
     }
+  },
+  mounted () {
+    console.log('mounted...')
   }
 })
 
