@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "dev": "rollup -c -w",
-    "build": "rm -rf dist && rollup -c",
+    "build": "rm -rf dist && rollup -c && npm run minify",
     "minify": "uglifyjs $npm_package_browser -cm -o $npm_package_browser",
     "release": "npm run build && npm run minify && standard-version && git push --follow-tags && npm publish --access=public"
   },
