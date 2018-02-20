@@ -3,5 +3,6 @@ export default {
     console.log('validator directive binded')
   },
   update: function () {},
-  unbind: function () {}
+  unbind: function () {},
+  name: 'validator'
 }
