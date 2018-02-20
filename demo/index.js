@@ -1,6 +1,6 @@
 var validator = window['vue-validator']
 // Vue.use(validator)
-var errorClass = 'bln-validate-fail'
+var errorClass = 'validate-fail'
 Vue.use(validator, {
   // errorClass: 'bln-validate-fail',
   onError: (validatorInstance) => {
@@ -25,6 +25,31 @@ var app = new Vue({
         key: 'mobile'
       }],
       required: true
+    },
+    ruleNumber: {
+      rules: [{
+        key: 'number'
+      }, {
+        key: 'max',
+        value: 200
+      }, {
+        key: 'min',
+        value: 30
+      }]
+    },
+    ruleLength: {
+      rules: [{
+        key: 'max_length',
+        value: 6
+      }, {
+        key: 'min_length',
+        value: 2
+      }]
+    },
+    ruleIDCard: {
+      rules: [{
+        key: 'idcard'
+      }]
     }
   }
 })

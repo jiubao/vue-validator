@@ -28,7 +28,7 @@ export default class Validator {
     var val = this.getValue()
     this.pass = !this.rules.some(rule => {
       var result = allRules[rule.key](val, rule.value)
-      console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
+      // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
       return !result
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)

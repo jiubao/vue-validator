@@ -3,28 +3,41 @@ import {isEmpty} from './utils'
 const regMobile = /^1[3456789]\d{9}$/
 const regIdcard15 = /^\d{15}$/
 const regIdcard18 = /^\d{17}[\dXx]$/
+const regNumber = /^[0-9]+$/
 
 const rules = {
-  required: (val) => {
-    return !isEmpty(val)
+  required: (value) => {
+    return !isEmpty(value)
   },
-  mobile: (val) => {
-    return regMobile.test(val)
+  mobile: (value) => {
+    if (isEmpty(value)) return false
+    return regMobile.test(value)
   },
-  'string': (val, cfg) => {
-    return !cfg.limit || val.length <= cfg.limit
+  'regular': (value, exp) => {
+    return exp.expression.test(val)
   },
-  'number': (val, cfg) => {
-    val = parseInt(val)
-    if (cfg.max && val > cfg.max) return false
-    if (cfg.min && val < cfg.min) return false
-    return true
+  'idcard': (value) => {
+    if (isEmpty(value)) return false
+    return regIdcard15.test(value) || regIdcard18.test(value)
   },
-  'regular': (val, cfg) => {
-    return cfg.expression.test(val)
+  'number': (value) => {
+    return regNumber.test(String(value));
   },
-  'idcard': (val) => {
-    return regIdcard15.test(val) || regIdcard18.test(val)
+  'max': (value, max) => {
+    if (isEmpty(value)) return false
+    return Number(value) <= max
+  },
+  'min': (value, min) => {
+    if (isEmpty(value)) return false
+    return Number(value) >= min
+  },
+  'max_length': (value, length) => {
+    if (isEmpty(value)) return length >= 0
+    return String(value).length <= length
+  },
+  'min_length': (value, length) => {
+    if (isEmpty(value)) return length <= 0
+    return String(value).length >= length
   }
 }
 

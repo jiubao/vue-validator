@@ -3,6 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>vue validator demo</title>
+    <style>
+    .validate-fail {
+      border: solid 1px red;
+    }
+
+    </style>
   </head>
   <body>
     <div id="app">
@@ -24,6 +30,24 @@
           <td>email</td>
           <td>
             <input type="text" name="" value="">
+          </td>
+        </tr>
+        <tr>
+          <td>number-max-min</td>
+          <td>
+            <input v-validator="ruleNumber" type="text" name="" value="">
+          </td>
+        </tr>
+        <tr>
+          <td>length</td>
+          <td>
+            <input v-validator="ruleLength" type="text" name="" value="">
+          </td>
+        </tr>
+        <tr>
+          <td>id card</td>
+          <td>
+            <input v-validator="ruleIDCard" type="text" name="" value="">
           </td>
         </tr>
       </table>
