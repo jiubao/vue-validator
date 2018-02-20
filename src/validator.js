@@ -37,7 +37,7 @@ export default class Validator {
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     this.pass ? this.onSuccess(this) : this.onError(this)
-    this.vm.formFailed = validators.some(v => !v.pass)
+    this.vm[config.resultKey] = !validators.some(v => !v.pass)
     return this.pass
   }
 

@@ -1,7 +1,8 @@
+import config from './config'
 var mixin = {
   data () {
     return {
-      formFailed: true
+      [config.resultKey]: true
     }
   }
 }

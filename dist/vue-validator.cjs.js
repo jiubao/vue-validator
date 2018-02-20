@@ -1,10 +1,18 @@
 'use strict';
 
+var config = {
+  events: ['input'],
+  errorClass: 'validate-fail',
+  onSuccess: function () {},
+  onError: function () {},
+  resultKey: 'validate$pass'
+}
+
 var mixin = {
   data: function data () {
-    return {
-      formFailed: true
-    }
+    var obj;
+
+    return ( obj = {}, obj[config.resultKey] = true, obj)
   }
 };
 
@@ -71,13 +79,6 @@ var rules = {
   }
 };
 
-var config = {
-  events: ['input'],
-  errorClass: 'validate-fail',
-  onSuccess: function () {},
-  onError: function () {}
-}
-
 var validators = [];
 
 var Validator = function Validator (el, rules$$1, key, vm) {
@@ -116,7 +117,7 @@ Validator.prototype.validate = function validate () {
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   this.pass ? this.onSuccess(this) : this.onError(this);
-  this.vm.formFailed = validators.some(function (v) { return !v.pass; });
+  this.vm[config.resultKey] = !validators.some(function (v) { return !v.pass; });
   return this.pass
 };
 
