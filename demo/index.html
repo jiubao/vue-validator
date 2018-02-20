@@ -7,9 +7,26 @@
   <body>
     <div id="app">
       {{message}}
-      <div v-validator="'phone'">
-
-      </div>
+      <table>
+        <tr>
+          <td>name</td>
+          <td>
+            <input v-validator="ruleRequired" v-model="name" type="text" name="" value="">
+          </td>
+        </tr>
+        <tr>
+          <td>phone</td>
+          <td>
+            <input v-validator="ruleMobile" v-model="phone" type="text" name="" value="">
+          </td>
+        </tr>
+        <tr>
+          <td>email</td>
+          <td>
+            <input type="text" name="" value="">
+          </td>
+        </tr>
+      </table>
     </div>
 
     <script type="text/javascript" src="../node_modules/vue/dist/vue.js"></script>
