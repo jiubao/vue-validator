@@ -1,13 +1,16 @@
 import allRules from './rules'
-import {on, off, emptyFn} from './utils'
+import {on, off, emptyFn, getBindingValue} from './utils'
 import config from './config'
 
 const validators = []
 
 export default class Validator {
-  constructor (el, rules) {
+  constructor (el, rules, key, vm) {
     this.el = el
     this.rules = rules || []
+    this.key = key
+    this.vm = vm
+
     this.pass = true
     this.onError = config.onError || emptyFn
     this.onSuccess = config.onSuccess || emptyFn
@@ -37,10 +40,12 @@ export default class Validator {
   }
 
   getValue () {
-    return this.el.value
+    return this.key && this.vm ? getBindingValue(this.vm, this.key) : this.el.value
   }
 
   destroy () {
+    this.el = null
+    this.vm = null
     config.events.forEach(evt => {
       off(this.el, evt, this._validate)
     })

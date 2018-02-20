@@ -14,6 +14,9 @@ Vue.use(validator, {
 var app = new Vue({
   el: '#app',
   data: {
+    employee: {
+      name: 'jiubao'
+    },
     message: 'vue validator',
     name: 'xiad',
     phone: '18737373737',
