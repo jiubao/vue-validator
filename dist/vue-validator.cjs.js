@@ -182,4 +182,9 @@ function config$1 (items) {
 
 var index = { install: install }
 
+// TODO:
+// 1. rm install
+// 2. cannot trigger input if not on input/textarea
+// 3. cannot trigger input if changed by code
+
 module.exports = index;
