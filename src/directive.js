@@ -6,10 +6,13 @@ export default {
     var rules = binding.value.rules || []
     binding.value.required && rules.unshift({key: 'required'})
     var v1 = new Validator(el, rules)
+    binding.value.$$validator = v1
   },
-  update: function () {
+  update: function (el, binding) {
     console.log('updating...')
   },
-  unbind: function () {},
+  unbind: function (el, binding) {
+    binding.value.$$validator.destroy()
+  },
   name: 'validator'
 }

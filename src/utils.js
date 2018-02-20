@@ -21,6 +21,8 @@ export function isUndefined (value) {
 
 export const isArray = Array.isArray
 
+export const emptyFn = () => {}
+
 export function on (element, evt, handler) {
   element.addEventListener(evt, handler, false)
 }
