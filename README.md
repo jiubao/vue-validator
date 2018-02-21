@@ -90,9 +90,10 @@ data: {
 
 ```html
 <input v-validator:employee$name="ruleRequired" v-model="employee.name" type="text" name="" value="">
-<input v-validator="ruleMobile" v-model="phone" type="text" name="" value="">
-<input v-validator="ruleNumber" type="text" name="" value="">
-<input v-validator="ruleLength" type="text" name="" value="">
+<input v-validator:phone="ruleMobile" v-model="phone" type="text">
+<input v-validator="ruleNumber" type="text">
+<input v-validator="ruleLength" type="text">
+<button type="button" :disabled="!validate$pass">submit</button>
 ```
 
 ## Todos
@@ -106,3 +107,4 @@ data: {
 * *.es *.umd *.cjs
 * jest
 * manage validators in factory
+* ref factory on Vue.prototype
