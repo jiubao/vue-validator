@@ -6,7 +6,7 @@ export default {
     // console.log('validator directive binded')
     var rules = binding.value.rules || []
     binding.value.required && rules.unshift({key: 'required'})
-    var key = binding.arg || getBindingKey(vnode)
+    var key = binding.arg ? binding.arg.replace(/\$/g, '.') : getBindingKey(vnode)
     var v1 = new Validator(el, rules, key, vnode.context)
     binding.value.$$validator = v1
   },

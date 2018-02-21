@@ -27,27 +27,34 @@
           </td>
         </tr>
         <tr>
-          <td>email</td>
-          <td>
-            <input type="text" name="" value="">
-          </td>
-        </tr>
-        <tr>
           <td>number-max-min</td>
           <td>
-            <input v-validator="ruleNumber" type="text" name="" value="">
+            <input v-validator="ruleNumber" type="text" value="32">
           </td>
         </tr>
         <tr>
           <td>length</td>
           <td>
-            <input v-validator="ruleLength" type="text" name="" value="">
+            <input v-validator="ruleLength" type="text" value="45">
           </td>
         </tr>
         <tr>
           <td>id card</td>
           <td>
-            <input v-validator="ruleIDCard" type="text" name="" value="">
+            <input v-validator="ruleIDCard" type="text" value="848484848484848">
+          </td>
+        </tr>
+        <tr>
+          <td>address</td>
+          <td>
+            <span v-validator:address="ruleRequired"> {{address}} </span>
+            <textarea v-validator="ruleRequired" v-model="address" rows="8" cols="80"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td>
+            <textarea v-validator="ruleRequired" v-model="description" rows="8" cols="80"></textarea>
           </td>
         </tr>
         <tr>
@@ -56,6 +63,11 @@
           </td>
         </tr>
       </table>
+
+      <input type="text" v-model="address">
+      <select>
+        <option value="">1</option>
+      </select>
     </div>
 
     <script type="text/javascript" src="../node_modules/vue/dist/vue.js"></script>

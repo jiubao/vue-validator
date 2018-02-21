@@ -15,7 +15,7 @@ export function isEmpty (val) {
 }
 
 export function getBindingValue (vm, key) {
-  return key.split('$').reduce((acc, cv, ci, arr) => {
+  return key.split('.').reduce((acc, cv, ci, arr) => {
     return acc[cv]
   }, vm)
 }

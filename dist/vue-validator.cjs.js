@@ -2,10 +2,10 @@
 
 var config = {
   events: ['input'],
-  errorClass: 'validate-fail',
   onSuccess: function () {},
   onError: function () {},
   resultKey: 'validate$pass'
+  // errorClass: 'validate-fail'
 }
 
 var mixin = {
@@ -33,7 +33,7 @@ function isEmpty (val) {
 }
 
 function getBindingValue (vm, key) {
-  return key.split('$').reduce(function (acc, cv, ci, arr) {
+  return key.split('.').reduce(function (acc, cv, ci, arr) {
     return acc[cv]
   }, vm)
 }
@@ -80,6 +80,7 @@ var rules = {
 };
 
 var validators = [];
+var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
 
 var Validator = function Validator (el, rules$$1, key, vm) {
   this.el = el;
@@ -103,9 +104,13 @@ var staticAccessors = { all: { configurable: true } };
 Validator.prototype.bind = function bind () {
     var this$1 = this;
 
-  config.events.forEach(function (evt) {
-    on(this$1.el, evt, this$1._validate);
-  });
+  if (this.key) {
+    this.vm.$watch(this.key, this._validate);
+  } else if (formElms.indexOf(this.el.tagName) >= 0) {
+    config.events.forEach(function (evt) {
+      on(this$1.el, evt, this$1._validate);
+    });
+  }
 };
 
 Validator.prototype.validate = function validate () {
@@ -146,7 +151,7 @@ var directive = {
     // console.log('validator directive binded')
     var rules = binding.value.rules || [];
     binding.value.required && rules.unshift({key: 'required'});
-    var key = binding.arg || getBindingKey(vnode);
+    var key = binding.arg ? binding.arg.replace(/\$/g, '.') : getBindingKey(vnode);
     var v1 = new Validator(el, rules, key, vnode.context);
     binding.value.$$validator = v1;
   },
@@ -165,11 +170,13 @@ function getBindingKey (vnode) {
   return directive ? directive.expression : ''
 }
 
-function install (vue, options) {
-  options && config$1(options);
-  vue.mixin(mixin);
-  vue.directive('validator', directive);
-  vue.prototype.$$validators = Validator.all;
+var index = {
+  install: function install (vue, options) {
+    options && config$1(options);
+    vue.mixin(mixin);
+    vue.directive('validator', directive);
+    vue.prototype.$$validators = Validator.all;
+  }
 }
 
 function config$1 (items) {
@@ -177,14 +184,7 @@ function config$1 (items) {
   config.events = items.events || config.events;
   // cfg.errorClass = items.errorClass || cfg.errorClass
   config.onSuccess = items.onSuccess || config.onSuccess;
-  config.onError = items.onError || config.onError;
+  config.onError = items.onError || config.onError, config.resultKey = items.resultKey || config.resultKey;
 }
-
-var index = { install: install }
-
-// TODO:
-// 1. rm install
-// 2. cannot trigger input if not on input/textarea
-// 3. cannot trigger input if changed by code
 
 module.exports = index;

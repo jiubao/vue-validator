@@ -20,6 +20,8 @@ var app = new Vue({
     message: 'vue validator',
     name: 'xiad',
     phone: '18737373737',
+    address: 'sh',
+    description: 'a',
     ruleRequired: {
       required: true
     },

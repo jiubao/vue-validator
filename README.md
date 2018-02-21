@@ -96,13 +96,13 @@ data: {
 ```
 
 ## Todos
-* rm install
-* cannot trigger input if not on input/textarea
-* cannot trigger input if changed by code
-* readme
+* ~~rm install~~
+* ~~cannot trigger input if not on input/textarea~~
+* ~~cannot trigger input if changed by code~~
+* ~~readme~~
 * employee$name
 * directive update
 * destroy validators when component unmounted
 * *.es *.umd *.cjs
 * jest
-* ...
+* manage validators in factory

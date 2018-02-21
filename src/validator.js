@@ -3,6 +3,7 @@ import {on, off, emptyFn, getBindingValue} from './utils'
 import config from './config'
 
 const validators = []
+const formElms = ['INPUT', 'TEXTAREA', 'SELECT']
 
 export default class Validator {
   constructor (el, rules, key, vm) {
@@ -23,9 +24,13 @@ export default class Validator {
   }
 
   bind () {
-    config.events.forEach(evt => {
-      on(this.el, evt, this._validate)
-    })
+    if (this.key) {
+      this.vm.$watch(this.key, this._validate)
+    } else if (formElms.indexOf(this.el.tagName) >= 0) {
+      config.events.forEach(evt => {
+        on(this.el, evt, this._validate)
+      })
+    }
   }
 
   validate () {
