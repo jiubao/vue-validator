@@ -1,6 +1,6 @@
 {
   "name": "@jiubao/vue-validator",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "vue form validator",
   "main": "dist/vue-validator.es.js",
   "browser": "dist/vue-validator.umd.js",
