@@ -28,3 +28,13 @@ export function getBindingValue (vm, key) {
     return acc[cv]
   }, vm)
 }
+
+export function prop (el, key, value) {
+  var key = `data-vv-${key}`
+  return arguments.length === 2 ? el.getAttribute(key) : el.setAttribute(key, value)
+}
+
+var id = 0
+export function uid () {
+  return id++
+}

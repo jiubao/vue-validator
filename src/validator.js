@@ -1,5 +1,5 @@
 import allRules from './rules'
-import {on, off, emptyFn, getBindingValue} from './utils'
+import {on, off, emptyFn, getBindingValue, uid, prop} from './utils'
 import config from './config'
 
 const validators = []
@@ -7,7 +7,9 @@ const formElms = ['INPUT', 'TEXTAREA', 'SELECT']
 
 export default class Validator {
   constructor (el, rules, key, vm) {
+    this.id = uid()
     this.el = el
+    prop(el, 'id', this.id)
     this.rules = rules || []
     this.key = key
     this.vm = vm

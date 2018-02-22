@@ -47,6 +47,16 @@ function getBindingValue (vm, key) {
   }, vm)
 }
 
+function prop (el, key, value) {
+  var key = "data-vv-" + key;
+  return arguments.length === 2 ? el.getAttribute(key) : el.setAttribute(key, value)
+}
+
+var id = 0;
+function uid () {
+  return id++
+}
+
 var regMobile = /^1[3456789]\d{9}$/;
 var regIdcard15 = /^\d{15}$/;
 var regIdcard18 = /^\d{17}[\dXx]$/;
@@ -92,7 +102,9 @@ var validators = [];
 var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
 
 var Validator = function Validator (el, rules$$1, key, vm) {
+  this.id = uid();
   this.el = el;
+  prop(el, 'id', this.id);
   this.rules = rules$$1 || [];
   this.key = key;
   this.vm = vm;
@@ -170,22 +182,23 @@ var directive = {
       });
     }
 
-    var key = el.getAttribute('data-vv-path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
-    var v1 = new Validator(el, rules, key, vnode.context);
-    // binding.value.$$validator = v1
+    var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
+    new Validator(el, rules, key, vnode.context);
+  },
+  unbind: function (el, binding, vnode) {
+    var v = findValidator(el, vnode.context);
+    v && v.destroy();
   }
-  // update: function (el, binding) {
-  // },
-  // unbind: function (el, binding) {
-  //   binding.value.$$validator.destroy()
-  // },
-  // name: 'validator'
 }
 
 function getBindingKey (vnode) {
   if (!vnode || !isArray(vnode.data.directives)) { return '' }
   var directive = vnode.data.directives.find(function (d) { return d.name === 'model'; });
   return directive ? directive.expression : ''
+}
+
+function findValidator (el, vm) {
+  return vm.$$validators.find(function (v) { return String(v.id) === prop(el, 'id'); })
 }
 
 var index = {
