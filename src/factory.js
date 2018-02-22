@@ -2,7 +2,6 @@
 import Validator from './validator'
 import {uid} from './utils'
 
-// const validators = {}
 const validators = []
 
 function add (el, rules, key, vm) {
@@ -12,16 +11,23 @@ function add (el, rules, key, vm) {
 function all () {
   return validators
 }
-function pass () {
-  // return !Object.keys(validators).some(key => !validators[key].pass)
-  return validators.some(v => !v.pass)
+function pass (vm) {
+  return !validators.filter(v => v.vm === vm).some(v => !v.pass)
 }
 
 function find (id) {
-  // return validators[id]
   return validators.find(v => String(v.id) === String(id))
 }
 
+function destroy (vm) {
+  if (vm)
+    for (var i = validators.length - 1; i >= 0; i--)
+      if (validators[i].vm === vm) {
+        validators[i].destroy()
+        validators.splice(i, 1)
+      }
+}
+
 export default {
-  add, all, pass, find
+  add, all, pass, find, destroy
 }

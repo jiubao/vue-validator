@@ -11,9 +11,21 @@ Vue.use(validator, {
   }
 })
 
+Vue.component('second', {
+  template: `<div>
+    <input type="text" v-validator="'required'" />
+    <input type="text" v-validator="'required|number'" />
+    <button :disabled="!validate$pass">submit</button>
+    </div>`,
+  mounted () {
+    // console.log('second:validate$pass', this.validate$pass)
+  }
+})
+
 var app = new Vue({
   el: '#app',
   data: {
+    show: true,
     items: [{
       id: 1,name:'xx'
     }, {

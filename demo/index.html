@@ -81,13 +81,9 @@
         <option value="">1</option>
       </select>
 
+      <button type="button" name="button" @click="show = !show">show/hide</button>
+      <second v-if="show"></second>
 
-      <ul>
-        <template v-for="item in items">
-          <li>{{ item.id }}</li>
-          <li class="divider">{{item.name}}</li>
-        </template>
-      </ul>
 
     </div>
 
@@ -95,10 +91,5 @@
     <script type="text/javascript" src="../dist/vue-validator.umd.js"></script>
     <script type="text/javascript" src="index.js"></script>
 
-<!--
-    <dt v-for="ctag in tagList" :key="ctag.id" v-if="$route.params.id == ctag.id">
-      <router-link :to="{path:'/problem/list/' + ctag.id}">{{ctag.name}}</router-link>
-    </dt>
-    <dd v-else><router-link :to="{path:'/problem/list/' + ctag.id}">{{ctag.name}}</router-link></dd> -->
   </body>
 </html>

@@ -6,14 +6,6 @@ var config = {
   // errorClass: 'validate-fail'
 }
 
-var mixin = {
-  data: function data () {
-    var obj;
-
-    return ( obj = {}, obj[config.resultKey] = true, obj)
-  }
-};
-
 var isArray = Array.isArray;
 
 function isString (value) {
@@ -138,7 +130,7 @@ Validator.prototype.validate = function validate () {
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   this.pass ? this.onSuccess(this) : this.onError(this);
-  this.vm[config.resultKey] = factory.pass();
+  this.vm[config.resultKey] = factory.pass(this.vm);
   return this.pass
 };
 
@@ -149,11 +141,10 @@ Validator.prototype.getValue = function getValue () {
 Validator.prototype.destroy = function destroy () {
     var this$1 = this;
 
-  this.el = null;
-  this.vm = null;
-  config.events.forEach(function (evt) {
+  this.el && config.events.forEach(function (evt) {
     off(this$1.el, evt, this$1._validate);
   });
+  this.el = this.vm = this._validate = null;
 };
 
 staticAccessors.all.get = function () {
@@ -164,7 +155,6 @@ Object.defineProperties( Validator, staticAccessors );
 
 // manage validators by module name
 
-// const validators = {}
 var validators$1 = [];
 
 function add (el, rules, key, vm) {
@@ -174,19 +164,37 @@ function add (el, rules, key, vm) {
 function all () {
   return validators$1
 }
-function pass () {
-  // return !Object.keys(validators).some(key => !validators[key].pass)
-  return validators$1.some(function (v) { return !v.pass; })
+function pass (vm) {
+  return !validators$1.filter(function (v) { return v.vm === vm; }).some(function (v) { return !v.pass; })
 }
 
 function find (id) {
-  // return validators[id]
   return validators$1.find(function (v) { return String(v.id) === String(id); })
 }
 
-var factory = {
-  add: add, all: all, pass: pass, find: find
+function destroy (vm) {
+  if (vm)
+    { for (var i = validators$1.length - 1; i >= 0; i--)
+      { if (validators$1[i].vm === vm) {
+        validators$1[i].destroy();
+        validators$1.splice(i, 1);
+      } } }
 }
+
+var factory = {
+  add: add, all: all, pass: pass, find: find, destroy: destroy
+}
+
+var mixin = {
+  data: function data () {
+    var obj;
+
+    return ( obj = {}, obj[config.resultKey] = true, obj)
+  },
+  beforeDestroy: function beforeDestroy () {
+    factory.destroy(this);
+  }
+};
 
 var directive = {
   bind: function (el, binding, vnode) {
@@ -223,14 +231,13 @@ var index = {
     options && config$1(options);
     vue.mixin(mixin);
     vue.directive('validator', directive);
-    vue.prototype.$$validators = factory;
+    vue.prototype.$$validator = factory;
   }
 }
 
 function config$1 (items) {
   items = items || {};
   config.events = items.events || config.events;
-  // cfg.errorClass = items.errorClass || cfg.errorClass
   config.onSuccess = items.onSuccess || config.onSuccess;
   config.onError = items.onError || config.onError, config.resultKey = items.resultKey || config.resultKey;
 }

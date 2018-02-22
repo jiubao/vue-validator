@@ -1,6 +1,6 @@
 # vue-validator
 * zero dependencies
-* 2.8k before gzipped
+* 3.5k before gzipped
 
 ## Install
 Note: the "vue-validator" on NPM refers to https://github.com/kazupon/vue-validator.
@@ -106,11 +106,12 @@ data: {
 * ~~cannot trigger input if changed by code~~
 * ~~readme~~
 * ~~employee$name~~
-* directive unbind
-* manage validators in factory (by component)
-* destroy validators when component unmounted
-* ref factory on Vue.prototype
+* ~~directive unbind~~
+* ~~manage validators in factory (by component)~~
+* ~~destroy validators when component unmounted~~
+* ~~ref factory on Vue.prototype~~
 * directive update
 * error
+* scope validate: scope on component
 * *.es *.umd *.cjs
 * jest

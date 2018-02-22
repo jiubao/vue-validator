@@ -42,7 +42,7 @@ export default class Validator {
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     this.pass ? this.onSuccess(this) : this.onError(this)
-    this.vm[config.resultKey] = factory.pass()
+    this.vm[config.resultKey] = factory.pass(this.vm)
     return this.pass
   }
 
@@ -51,11 +51,10 @@ export default class Validator {
   }
 
   destroy () {
-    this.el = null
-    this.vm = null
-    config.events.forEach(evt => {
+    this.el && config.events.forEach(evt => {
       off(this.el, evt, this._validate)
     })
+    this.el = this.vm = this._validate = null
   }
 
   static get all () {
