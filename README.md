@@ -17,7 +17,7 @@ import validator from '@jiubao/vue-validator/dist/vue-validator.es'
 
 The [UMD](https://github.com/umdjs/umd) build is available on [unpkg](https://unpkg.com):
 ```html
-<script src="https://unpkg.com/@jiubao/vue-validator@0.0.11/dist/vue-validator.umd.js"></script>
+<script src="https://unpkg.com/@jiubao/vue-validator@0.0.14/dist/vue-validator.umd.js"></script>
 ```
 
 ## Usage
@@ -90,7 +90,7 @@ data: {
 ```
 
 ```html
-<input v-validator:employee$name="ruleRequired" v-model="employee.name" type="text" name="" value="">
+<input v-validator:employee$name.init="ruleRequired" v-model="employee.name" type="text" name="" value="">
 <input v-validator:phone="ruleMobile" v-model="phone" type="text">
 <input v-validator="ruleNumber" type="text">
 <input v-validator="ruleLength" type="text">
@@ -126,8 +126,9 @@ Vue.prototype.$$validator.all()
 * ~~manage validators in factory (by component)~~
 * ~~destroy validators when component unmounted~~
 * ~~ref factory on Vue.prototype~~
-* initial validate
-* directive update
+* ~~initial validate~~
+* ~~directive update~~
+* if change rule obj (not replace), can't reactive the change (bind: value === oldValue)
 * error
 * scope validate: scope on component
 * *.es *.umd *.cjs

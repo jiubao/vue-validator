@@ -1,11 +1,11 @@
 // manage validators by module name
 import Validator from './validator'
-import {uid} from './utils'
+import {uid, isNumber, isString} from './utils'
 
 const validators = []
 
-function add (el, rules, key, vm) {
-  validators.push(new Validator(uid(), el, rules, key, vm))
+function add (el, rules, key, vm, init) {
+  validators.push(new Validator(uid(), el, rules, key, vm, init))
 }
 
 function all (vm) {
@@ -19,13 +19,14 @@ function find (id) {
   return validators.find(v => String(v.id) === String(id))
 }
 
-function destroy (vm) {
-  if (vm)
+function destroy (arg) {
+  if (isNumber(arg)) validators.splice(arg, 1)[0].destroy() // if index, destroy one
+  else if (isString(arg)) destroy(validators.indexOf(find(arg))) // if string, destroy by id
+  else if (arg instanceof Validator) destroy(validators.indexOf(arg)) // if Validator, destroy one
+  else // if vm, destroy component, if null, destroy all
     for (var i = validators.length - 1; i >= 0; i--)
-      if (validators[i].vm === vm) {
-        validators[i].destroy()
-        validators.splice(i, 1)
-      }
+      if (!arg || arg === validators[i].vm)
+        destroy(i)
 }
 
 export default {

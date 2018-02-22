@@ -15,9 +15,13 @@
       {{message}}
       <table>
         <tr>
+          <td>result</td>
+          <td>{{validate$pass}}</td>
+        </tr>
+        <tr>
           <td>name</td>
           <td>
-            <input v-validator:employee$name="ruleRequired" v-model="employee.name" type="text">
+            <input v-validator:employee$name.init="ruleName" v-model="employee.name" type="text">
           </td>
         </tr>
         <tr>
@@ -37,7 +41,7 @@
         <tr>
           <td>number-max-min</td>
           <td>
-            <input v-validator="ruleNumber" type="text" value="32">
+            <input v-validator.init="ruleNumber" type="text" value="333">
           </td>
         </tr>
         <tr>
@@ -68,7 +72,12 @@
         </tr>
         <tr>
           <td colspan="2">
-            <button type="button" :disabled="!validate$pass" name="button">submit</button>
+            <button :disabled="!validate$pass">submit</button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button @click="changeNameRule">change</button>
           </td>
         </tr>
       </table>

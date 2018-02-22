@@ -6,7 +6,7 @@ import factory from './factory'
 const formElms = ['INPUT', 'TEXTAREA', 'SELECT']
 
 export default class Validator {
-  constructor (id, el, rules, key, vm) {
+  constructor (id, el, rules, key, vm, init) {
     this.id = id
     this.el = el
     prop(el, 'id', this.id)
@@ -17,15 +17,16 @@ export default class Validator {
     this.pass = false
     this.onError = config.onError || emptyFn
     this.onSuccess = config.onSuccess || emptyFn
-    this.validate()
-    this._validate = this.validate.bind(this)
+    this.validate(init)
+    // this._validate = this.validate.bind(this)
+    this._validate = () => this.validate()
 
     this.bind()
   }
 
   bind () {
     if (this.key) {
-      this.vm.$watch(this.key, this._validate)
+      this.unwatch = this.vm.$watch(this.key, this._validate)
     } else if (formElms.indexOf(this.el.tagName) >= 0) {
       config.events.forEach(evt => {
         on(this.el, evt, this._validate)
@@ -33,7 +34,7 @@ export default class Validator {
     }
   }
 
-  validate () {
+  validate (trigger) {
     var val = this.getValue()
     this.pass = !this.rules.some(rule => {
       var result = allRules[rule.key](val, rule.value)
@@ -41,7 +42,7 @@ export default class Validator {
       return !result
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
-    this.pass ? this.onSuccess(this) : this.onError(this)
+    trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this))
     this.vm[config.resultKey] = factory.pass(this.vm)
     return this.pass
   }
@@ -51,6 +52,7 @@ export default class Validator {
   }
 
   destroy () {
+    this.unwatch && this.unwatch()
     this.el && config.events.forEach(evt => off(this.el, evt, this._validate))
     this.el = this.vm = this._validate = null
   }

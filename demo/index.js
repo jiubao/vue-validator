@@ -32,7 +32,7 @@ var app = new Vue({
       id: 2, name: 'yu'
     }],
     employee: {
-      name: 'jiubao',
+      name: '',
       age: 30
     },
     message: 'vue validator',
@@ -40,6 +40,16 @@ var app = new Vue({
     phone: '18737373737',
     address: 'sh',
     description: 'a',
+    ruleName: {
+      required: true
+    },
+    ruleName2: {
+      rules: [{
+        key: 'min_length',
+        value: 3
+      }],
+      required: true
+    },
     ruleRequired: {
       required: true
     },
@@ -75,8 +85,14 @@ var app = new Vue({
       }]
     }
   },
+  methods: {
+    changeNameRule () {
+      // this.ruleName.rules = this.ruleName2.rules
+      this.ruleName = this.ruleName2
+    }
+  },
   mounted () {
-    console.log('mounted...')
+    // console.log('mounted...')
   }
 })
 

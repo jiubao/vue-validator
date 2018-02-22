@@ -9,15 +9,9 @@ var config = {
 }
 
 var isArray = Array.isArray;
-
-function isString (value) {
-  return typeof value === 'string'
-}
-
-function isObject (value) {
-  // http://jsperf.com/isobject4
-  return value !== null && typeof value === 'object'
-}
+var isString = function (value) { return typeof value === 'string'; };
+var isObject = function (value) { return value !== null && typeof value === 'object'; };
+var isNumber = function (value) { return typeof value === 'number'; };
 
 var emptyFn = function () {};
 
@@ -92,7 +86,9 @@ var rules = {
 
 var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
 
-var Validator = function Validator (id, el, rules$$1, key, vm) {
+var Validator = function Validator (id, el, rules$$1, key, vm, init) {
+  var this$1 = this;
+
   this.id = id;
   this.el = el;
   prop(el, 'id', this.id);
@@ -103,8 +99,9 @@ var Validator = function Validator (id, el, rules$$1, key, vm) {
   this.pass = false;
   this.onError = config.onError || emptyFn;
   this.onSuccess = config.onSuccess || emptyFn;
-  this.validate();
-  this._validate = this.validate.bind(this);
+  this.validate(init);
+  // this._validate = this.validate.bind(this)
+  this._validate = function () { return this$1.validate(); };
 
   this.bind();
 };
@@ -113,7 +110,7 @@ Validator.prototype.bind = function bind () {
     var this$1 = this;
 
   if (this.key) {
-    this.vm.$watch(this.key, this._validate);
+    this.unwatch = this.vm.$watch(this.key, this._validate);
   } else if (formElms.indexOf(this.el.tagName) >= 0) {
     config.events.forEach(function (evt) {
       on(this$1.el, evt, this$1._validate);
@@ -121,7 +118,7 @@ Validator.prototype.bind = function bind () {
   }
 };
 
-Validator.prototype.validate = function validate () {
+Validator.prototype.validate = function validate (trigger) {
   var val = this.getValue();
   this.pass = !this.rules.some(function (rule) {
     var result = rules[rule.key](val, rule.value);
@@ -129,7 +126,7 @@ Validator.prototype.validate = function validate () {
     return !result
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
-  this.pass ? this.onSuccess(this) : this.onError(this);
+  trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this));
   this.vm[config.resultKey] = factory.pass(this.vm);
   return this.pass
 };
@@ -141,6 +138,7 @@ Validator.prototype.getValue = function getValue () {
 Validator.prototype.destroy = function destroy () {
     var this$1 = this;
 
+  this.unwatch && this.unwatch();
   this.el && config.events.forEach(function (evt) { return off(this$1.el, evt, this$1._validate); });
   this.el = this.vm = this._validate = null;
 };
@@ -149,8 +147,8 @@ Validator.prototype.destroy = function destroy () {
 
 var validators = [];
 
-function add (el, rules, key, vm) {
-  validators.push(new Validator(uid(), el, rules, key, vm));
+function add (el, rules, key, vm, init) {
+  validators.push(new Validator(uid(), el, rules, key, vm, init));
 }
 
 function all (vm) {
@@ -164,13 +162,14 @@ function find (id) {
   return validators.find(function (v) { return String(v.id) === String(id); })
 }
 
-function destroy (vm) {
-  if (vm)
+function destroy (arg) {
+  if (isNumber(arg)) { validators.splice(arg, 1)[0].destroy(); } // if index, destroy one
+  else if (isString(arg)) { destroy(validators.indexOf(find(arg))); } // if string, destroy by id
+  else if (arg instanceof Validator) { destroy(validators.indexOf(arg)); } // if Validator, destroy one
+  else // if vm, destroy component, if null, destroy all
     { for (var i = validators.length - 1; i >= 0; i--)
-      { if (validators[i].vm === vm) {
-        validators[i].destroy();
-        validators.splice(i, 1);
-      } } }
+      { if (!arg || arg === validators[i].vm)
+        { destroy(i); } } }
 }
 
 var factory = {
@@ -181,7 +180,7 @@ var mixin = {
   data: function data () {
     var obj;
 
-    return ( obj = {}, obj[config.resultKey] = true, obj)
+    return ( obj = {}, obj[config.resultKey] = false, obj)
   },
   beforeDestroy: function beforeDestroy () {
     factory.destroy(this);
@@ -190,23 +189,14 @@ var mixin = {
 
 var directive = {
   bind: function (el, binding, vnode) {
-    var rules = [];
-    if (isObject(binding.value)) {
-      rules = binding.value.rules || [];
-      binding.value.required && rules.unshift({key: 'required'});
-    } else if (isString(binding.value) && !isEmpty(binding.value)) {
-      binding.value.split('|').forEach(function (v) {
-        var vs = v.split(':');
-        var rule = {key: vs[0]};
-        if (vs[1]) { rule.value = vs[1]; }
-        rules.push(rule);
-      });
-    }
-
-    var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
-    factory.add(el, rules, key, vnode.context);
+    build(el, binding, vnode);
   },
-  unbind: function (el, binding, vnode) {
+  update: function (el, binding, vnode) {
+    if (binding.value === binding.oldValue) { return }
+    factory.destroy(prop(el, 'id'));
+    build(el, binding, vnode);
+  },
+  unbind: function (el) {
     var v = factory.find(prop(el, 'id'));
     v && v.destroy();
   }
@@ -216,6 +206,24 @@ function getBindingKey (vnode) {
   if (!vnode || !isArray(vnode.data.directives)) { return '' }
   var directive = vnode.data.directives.find(function (d) { return d.name === 'model'; });
   return directive ? directive.expression : ''
+}
+
+function build (el, binding, vnode) {
+  var rules = [];
+  if (isObject(binding.value)) {
+    rules = binding.value.rules || [];
+    binding.value.required && rules.unshift({key: 'required'});
+  } else if (isString(binding.value) && !isEmpty(binding.value)) {
+    binding.value.split('|').forEach(function (v) {
+      var vs = v.split(':');
+      var rule = {key: vs[0]};
+      if (vs[1]) { rule.value = vs[1]; }
+      rules.push(rule);
+    });
+  }
+
+  var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
+  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init);
 }
 
 var index = {

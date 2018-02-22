@@ -3,7 +3,7 @@ import factory from './factory'
 var mixin = {
   data () {
     return {
-      [config.resultKey]: true
+      [config.resultKey]: false
     }
   },
   beforeDestroy () {

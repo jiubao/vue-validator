@@ -1,13 +1,7 @@
 export const isArray = Array.isArray
-
-export function isString (value) {
-  return typeof value === 'string'
-}
-
-export function isObject (value) {
-  // http://jsperf.com/isobject4
-  return value !== null && typeof value === 'object'
-}
+export const isString = (value) => typeof value === 'string'
+export const isObject = (value) => value !== null && typeof value === 'object'
+export const isNumber = (value) => typeof value === 'number'
 
 export const emptyFn = () => {}
 
