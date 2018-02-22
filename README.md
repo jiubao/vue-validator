@@ -1,6 +1,6 @@
 # vue-validator
 * zero dependencies
-* 2.5k before gzipped
+* 2.8k before gzipped
 
 ## Install
 Note: the "vue-validator" on NPM refers to https://github.com/kazupon/vue-validator.
@@ -17,7 +17,7 @@ import validator from '@jiubao/vue-validator/dist/vue-validator.es'
 
 The [UMD](https://github.com/umdjs/umd) build is available on [unpkg](https://unpkg.com):
 ```html
-<script src="https://unpkg.com/@jiubao/vue-validator@0.0.10/dist/vue-validator.umd.js"></script>
+<script src="https://unpkg.com/@jiubao/vue-validator@0.0.11/dist/vue-validator.umd.js"></script>
 ```
 
 ## Usage
@@ -53,7 +53,8 @@ Vue.use(validator, {
 ```js
 data: {
   employee: {
-    name: 'jiubao'
+    name: 'jiubao',
+    age: 10
   },
   phone: '18737373737',
   ruleRequired: {
@@ -93,6 +94,9 @@ data: {
 <input v-validator:phone="ruleMobile" v-model="phone" type="text">
 <input v-validator="ruleNumber" type="text">
 <input v-validator="ruleLength" type="text">
+<input v-validator="'required|number|max:100|min:0'" v-model="employee.age" type="text">
+<span v-validator="'required'" data-vv-path="employee.age"> {{employee.age}} </span>&nbsp;
+<span v-validator:employee$age="'required|number|max:100|min:0'">{{employee.age}}</span>
 <button type="button" :disabled="!validate$pass">submit</button>
 ```
 
@@ -101,10 +105,11 @@ data: {
 * ~~cannot trigger input if not on input/textarea~~
 * ~~cannot trigger input if changed by code~~
 * ~~readme~~
-* employee$name
+* ~~employee$name~~
 * directive update
+* directive unbind
 * destroy validators when component unmounted
 * *.es *.umd *.cjs
 * jest
-* manage validators in factory
+* manage validators in factory (by component)
 * ref factory on Vue.prototype

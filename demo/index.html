@@ -17,7 +17,15 @@
         <tr>
           <td>name</td>
           <td>
-            <input v-validator:employee$name="ruleRequired" v-model="employee.name" type="text" name="" value="">
+            <input v-validator:employee$name="ruleRequired" v-model="employee.name" type="text">
+          </td>
+        </tr>
+        <tr>
+          <td>age</td>
+          <td>
+            <input v-validator="'required|number|max:100|min:0'" v-model="employee.age" type="text">
+            <span v-validator="'required'" data-vv-path="employee.age"> {{employee.age}} </span>
+            <span v-validator:employee$age="'required|number|max:100|min:0'"> {{employee.age}} </span>
           </td>
         </tr>
         <tr>
@@ -47,7 +55,8 @@
         <tr>
           <td>address</td>
           <td>
-            <span v-validator:address="ruleRequired"> {{address}} </span>
+            <span v-validator:address="ruleRequired"> {{address}} </span>&nbsp;
+            <span v-validator="'required'" data-vv-path="address"> {{address}} </span>
             <textarea v-validator="ruleRequired" v-model="address" rows="8" cols="80"></textarea>
           </td>
         </tr>
@@ -64,7 +73,10 @@
         </tr>
       </table>
 
+      address
       <input type="text" v-model="address">
+      age
+      <input type="text" v-model="employee.age">
       <select>
         <option value="">1</option>
       </select>

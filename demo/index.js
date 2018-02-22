@@ -15,7 +15,8 @@ var app = new Vue({
   el: '#app',
   data: {
     employee: {
-      name: 'jiubao'
+      name: 'jiubao',
+      age: 30
     },
     message: 'vue validator',
     name: 'xiad',
