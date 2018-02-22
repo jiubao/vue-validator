@@ -100,6 +100,22 @@ data: {
 <button type="button" :disabled="!validate$pass">submit</button>
 ```
 
+## API
+```js
+this.validate$pass
+this.$$validator.pass(this)
+Vue.prototype.$$validator.all()
+```
+
+### `strategies`
+* this.validate$pass
+* Vue.prototype.$$validator
+  - add
+  - all
+  - pass
+  - find
+  - destroy
+
 ## Todos
 * ~~rm install~~
 * ~~cannot trigger input if not on input/textarea~~
@@ -110,6 +126,7 @@ data: {
 * ~~manage validators in factory (by component)~~
 * ~~destroy validators when component unmounted~~
 * ~~ref factory on Vue.prototype~~
+* initial validate
 * directive update
 * error
 * scope validate: scope on component

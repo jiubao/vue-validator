@@ -8,11 +8,11 @@ function add (el, rules, key, vm) {
   validators.push(new Validator(uid(), el, rules, key, vm))
 }
 
-function all () {
-  return validators
+function all (vm) {
+  return vm ? validators.filter(v => v.vm === vm) : validators
 }
 function pass (vm) {
-  return !validators.filter(v => v.vm === vm).some(v => !v.pass)
+  return !all(vm).some(v => !v.pass)
 }
 
 function find (id) {

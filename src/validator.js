@@ -51,13 +51,7 @@ export default class Validator {
   }
 
   destroy () {
-    this.el && config.events.forEach(evt => {
-      off(this.el, evt, this._validate)
-    })
+    this.el && config.events.forEach(evt => off(this.el, evt, this._validate))
     this.el = this.vm = this._validate = null
-  }
-
-  static get all () {
-    return validators
   }
 }

@@ -107,8 +107,6 @@ var Validator = function Validator (id, el, rules$$1, key, vm) {
   this.bind();
 };
 
-var staticAccessors = { all: { configurable: true } };
-
 Validator.prototype.bind = function bind () {
     var this$1 = this;
 
@@ -141,43 +139,35 @@ Validator.prototype.getValue = function getValue () {
 Validator.prototype.destroy = function destroy () {
     var this$1 = this;
 
-  this.el && config.events.forEach(function (evt) {
-    off(this$1.el, evt, this$1._validate);
-  });
+  this.el && config.events.forEach(function (evt) { return off(this$1.el, evt, this$1._validate); });
   this.el = this.vm = this._validate = null;
 };
 
-staticAccessors.all.get = function () {
-  return validators
-};
-
-Object.defineProperties( Validator, staticAccessors );
-
 // manage validators by module name
 
-var validators$1 = [];
+var validators = [];
 
 function add (el, rules, key, vm) {
-  validators$1.push(new Validator(uid(), el, rules, key, vm));
+  validators.push(new Validator(uid(), el, rules, key, vm));
 }
 
-function all () {
-  return validators$1
+function all (vm) {
+  return vm ? validators.filter(function (v) { return v.vm === vm; }) : validators
 }
 function pass (vm) {
-  return !validators$1.filter(function (v) { return v.vm === vm; }).some(function (v) { return !v.pass; })
+  return !all(vm).some(function (v) { return !v.pass; })
 }
 
 function find (id) {
-  return validators$1.find(function (v) { return String(v.id) === String(id); })
+  return validators.find(function (v) { return String(v.id) === String(id); })
 }
 
 function destroy (vm) {
   if (vm)
-    { for (var i = validators$1.length - 1; i >= 0; i--)
-      { if (validators$1[i].vm === vm) {
-        validators$1[i].destroy();
-        validators$1.splice(i, 1);
+    { for (var i = validators.length - 1; i >= 0; i--)
+      { if (validators[i].vm === vm) {
+        validators[i].destroy();
+        validators.splice(i, 1);
       } } }
 }
 
