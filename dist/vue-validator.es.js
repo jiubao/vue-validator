@@ -164,22 +164,24 @@ Object.defineProperties( Validator, staticAccessors );
 
 // manage validators by module name
 
-var validators$1 = {};
+// const validators = {}
+var validators$1 = [];
 
 function add (el, rules, key, vm) {
-  var id = uid();
-  return validators$1[id] = new Validator(id, el, rules, key, vm)
+  validators$1.push(new Validator(uid(), el, rules, key, vm));
 }
 
 function all () {
   return validators$1
 }
 function pass () {
-  return !Object.keys(validators$1).some(function (key) { return !validators$1[key].pass; })
+  // return !Object.keys(validators).some(key => !validators[key].pass)
+  return validators$1.some(function (v) { return !v.pass; })
 }
 
 function find (id) {
-  return validators$1[id]
+  // return validators[id]
+  return validators$1.find(function (v) { return String(v.id) === String(id); })
 }
 
 var factory = {
