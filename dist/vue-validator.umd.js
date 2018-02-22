@@ -144,8 +144,7 @@ Validator.prototype.validate = function validate () {
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   this.pass ? this.onSuccess(this) : this.onError(this);
-  // this.vm[config.resultKey] = !validators.some(v => !v.pass)
-  this.vm[config.resultKey] = ValidatorFactory.instance.pass;
+  this.vm[config.resultKey] = factory.pass();
   return this.pass
 };
 
@@ -172,35 +171,26 @@ Object.defineProperties( Validator, staticAccessors );
 // manage validators by module name
 
 var validators$1 = {};
-var instance = null;
 
-var ValidatorFactory = function ValidatorFactory () {};
-
-var staticAccessors$1 = { instance: { configurable: true },pass: { configurable: true } };
-
-staticAccessors$1.instance.get = function () {
-  if (!instance) { instance = new ValidatorFactory(); }
-  return instance
-};
-
-ValidatorFactory.prototype.add = function add (el, rules, key, vm) {
+function add (el, rules, key, vm) {
   var id = uid();
-  validators$1[id] = new Validator(id, el, rules, key, vm);
-};
+  return validators$1[id] = new Validator(id, el, rules, key, vm)
+}
 
-ValidatorFactory.prototype.all = function all () {
+function all () {
   return validators$1
-};
-
-staticAccessors$1.pass.get = function () {
+}
+function pass () {
   return !Object.keys(validators$1).some(function (key) { return !validators$1[key].pass; })
-};
+}
 
-ValidatorFactory.find = function find (id) {
+function find (id) {
   return validators$1[id]
-};
+}
 
-Object.defineProperties( ValidatorFactory, staticAccessors$1 );
+var factory = {
+  add: add, all: all, pass: pass, find: find
+}
 
 var directive = {
   bind: function (el, binding, vnode) {
@@ -218,10 +208,10 @@ var directive = {
     }
 
     var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
-    ValidatorFactory.instance.add(el, rules, key, vnode.context);
+    factory.add(el, rules, key, vnode.context);
   },
   unbind: function (el, binding, vnode) {
-    var v = ValidatorFactory.find(prop(el, 'id'));
+    var v = factory.find(prop(el, 'id'));
     v && v.destroy();
   }
 }
@@ -237,7 +227,7 @@ var index = {
     options && config$1(options);
     vue.mixin(mixin);
     vue.directive('validator', directive);
-    vue.prototype.$$validators = ValidatorFactory;
+    vue.prototype.$$validators = factory;
   }
 }
 

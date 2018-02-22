@@ -1,4 +1,4 @@
-import factory from './validator-factory'
+import factory from './factory'
 import {isArray, isObject, isString, isEmpty, prop} from './utils'
 
 export default {
@@ -17,7 +17,7 @@ export default {
     }
 
     var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode)
-    factory.instance.add(el, rules, key, vnode.context)
+    factory.add(el, rules, key, vnode.context)
   },
   unbind: function (el, binding, vnode) {
     var v = factory.find(prop(el, 'id'))

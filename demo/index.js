@@ -14,6 +14,11 @@ Vue.use(validator, {
 var app = new Vue({
   el: '#app',
   data: {
+    items: [{
+      id: 1,name:'xx'
+    }, {
+      id: 2, name: 'yu'
+    }],
     employee: {
       name: 'jiubao',
       age: 30

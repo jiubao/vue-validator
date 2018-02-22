@@ -1,7 +1,7 @@
 import allRules from './rules'
 import {on, off, emptyFn, getBindingValue, prop} from './utils'
 import config from './config'
-import factory from './validator-factory'
+import factory from './factory'
 
 const formElms = ['INPUT', 'TEXTAREA', 'SELECT']
 
@@ -42,8 +42,7 @@ export default class Validator {
     })
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     this.pass ? this.onSuccess(this) : this.onError(this)
-    // this.vm[config.resultKey] = !validators.some(v => !v.pass)
-    this.vm[config.resultKey] = factory.instance.pass
+    this.vm[config.resultKey] = factory.pass()
     return this.pass
   }
 

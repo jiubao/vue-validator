@@ -1,6 +1,6 @@
 import mixin from './mixin'
 import directive from './directive'
-import factory from './validator-factory'
+import factory from './factory'
 import cfg from './config'
 
 export default {
