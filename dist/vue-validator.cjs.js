@@ -98,11 +98,10 @@ var rules = {
   }
 };
 
-var validators = [];
 var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
 
-var Validator = function Validator (el, rules$$1, key, vm) {
-  this.id = uid();
+var Validator = function Validator (id, el, rules$$1, key, vm) {
+  this.id = id;
   this.el = el;
   prop(el, 'id', this.id);
   this.rules = rules$$1 || [];
@@ -116,8 +115,6 @@ var Validator = function Validator (el, rules$$1, key, vm) {
   this._validate = this.validate.bind(this);
 
   this.bind();
-
-  validators.push(this);
 };
 
 var staticAccessors = { all: { configurable: true } };
@@ -143,7 +140,8 @@ Validator.prototype.validate = function validate () {
   });
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   this.pass ? this.onSuccess(this) : this.onError(this);
-  this.vm[config.resultKey] = !validators.some(function (v) { return !v.pass; });
+  // this.vm[config.resultKey] = !validators.some(v => !v.pass)
+  this.vm[config.resultKey] = ValidatorFactory.instance.pass;
   return this.pass
 };
 
@@ -167,6 +165,39 @@ staticAccessors.all.get = function () {
 
 Object.defineProperties( Validator, staticAccessors );
 
+// manage validators by module name
+
+var validators$1 = {};
+var instance = null;
+
+var ValidatorFactory = function ValidatorFactory () {};
+
+var staticAccessors$1 = { instance: { configurable: true },pass: { configurable: true } };
+
+staticAccessors$1.instance.get = function () {
+  if (!instance) { instance = new ValidatorFactory(); }
+  return instance
+};
+
+ValidatorFactory.prototype.add = function add (el, rules, key, vm) {
+  var id = uid();
+  validators$1[id] = new Validator(id, el, rules, key, vm);
+};
+
+ValidatorFactory.prototype.all = function all () {
+  return validators$1
+};
+
+staticAccessors$1.pass.get = function () {
+  return !Object.keys(validators$1).some(function (key) { return !validators$1[key].pass; })
+};
+
+ValidatorFactory.find = function find (id) {
+  return validators$1[id]
+};
+
+Object.defineProperties( ValidatorFactory, staticAccessors$1 );
+
 var directive = {
   bind: function (el, binding, vnode) {
     var rules = [];
@@ -183,10 +214,10 @@ var directive = {
     }
 
     var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
-    new Validator(el, rules, key, vnode.context);
+    ValidatorFactory.instance.add(el, rules, key, vnode.context);
   },
   unbind: function (el, binding, vnode) {
-    var v = findValidator(el, vnode.context);
+    var v = ValidatorFactory.find(prop(el, 'id'));
     v && v.destroy();
   }
 }
@@ -197,16 +228,12 @@ function getBindingKey (vnode) {
   return directive ? directive.expression : ''
 }
 
-function findValidator (el, vm) {
-  return vm.$$validators.find(function (v) { return String(v.id) === prop(el, 'id'); })
-}
-
 var index = {
   install: function install (vue, options) {
     options && config$1(options);
     vue.mixin(mixin);
     vue.directive('validator', directive);
-    vue.prototype.$$validators = Validator.all;
+    vue.prototype.$$validators = ValidatorFactory;
   }
 }
 

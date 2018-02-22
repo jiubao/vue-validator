@@ -1,4 +1,4 @@
-import Validator from './validator'
+import factory from './validator-factory'
 import {isArray, isObject, isString, isEmpty, prop} from './utils'
 
 export default {
@@ -17,10 +17,10 @@ export default {
     }
 
     var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode)
-    new Validator(el, rules, key, vnode.context)
+    factory.instance.add(el, rules, key, vnode.context)
   },
   unbind: function (el, binding, vnode) {
-    var v = findValidator(el, vnode.context);
+    var v = factory.find(prop(el, 'id'))
     v && v.destroy()
   }
 }
@@ -29,8 +29,4 @@ function getBindingKey (vnode) {
   if (!vnode || !isArray(vnode.data.directives)) return ''
   var directive = vnode.data.directives.find(d => d.name === 'model')
   return directive ? directive.expression : ''
-}
-
-function findValidator (el, vm) {
-  return vm.$$validators.find(v => String(v.id) === prop(el, 'id'))
 }

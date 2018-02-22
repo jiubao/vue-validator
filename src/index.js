@@ -1,6 +1,6 @@
 import mixin from './mixin'
 import directive from './directive'
-import Validator from './validator'
+import factory from './validator-factory'
 import cfg from './config'
 
 export default {
@@ -8,7 +8,7 @@ export default {
     options && config(options)
     vue.mixin(mixin)
     vue.directive('validator', directive)
-    vue.prototype.$$validators = Validator.all
+    vue.prototype.$$validators = factory
   }
 }
 

@@ -106,10 +106,11 @@ data: {
 * ~~cannot trigger input if changed by code~~
 * ~~readme~~
 * ~~employee$name~~
-* directive update
 * directive unbind
+* manage validators in factory (by component)
 * destroy validators when component unmounted
+* ref factory on Vue.prototype
+* directive update
+* error
 * *.es *.umd *.cjs
 * jest
-* manage validators in factory (by component)
-* ref factory on Vue.prototype
