@@ -1,6 +1,5 @@
 # vue-validator
-* zero dependencies
-* 3.5k before gzipped
+* 3.7k before gzipped
 
 ## Install
 Note: the "vue-validator" on NPM refers to https://github.com/kazupon/vue-validator.
@@ -17,7 +16,7 @@ import validator from '@jiubao/vue-validator/dist/vue-validator.es'
 
 The [UMD](https://github.com/umdjs/umd) build is available on [unpkg](https://unpkg.com):
 ```html
-<script src="https://unpkg.com/@jiubao/vue-validator@0.0.13/dist/vue-validator.umd.js"></script>
+<script src="https://unpkg.com/@jiubao/vue-validator"></script>
 ```
 
 ## Usage
