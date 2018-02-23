@@ -149,6 +149,7 @@ var validators = [];
 
 function add (el, rules, key, vm, init) {
   validators.push(new Validator(uid(), el, rules, key, vm, init));
+  vm[config.resultKey] = pass(vm);
 }
 
 function all (vm) {

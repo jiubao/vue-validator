@@ -1,11 +1,13 @@
 // manage validators by module name
 import Validator from './validator'
 import {uid, isNumber, isString} from './utils'
+import config from './config'
 
 const validators = []
 
 function add (el, rules, key, vm, init) {
   validators.push(new Validator(uid(), el, rules, key, vm, init))
+  vm[config.resultKey] = pass(vm)
 }
 
 function all (vm) {
