@@ -106,7 +106,6 @@ this.$$validator.pass(this)
 Vue.prototype.$$validator.all()
 ```
 
-### `strategies`
 * this.validate$pass
 * Vue.prototype.$$validator
   - add
