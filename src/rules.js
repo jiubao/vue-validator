@@ -13,8 +13,8 @@ const rules = {
     if (isEmpty(value)) return false
     return regMobile.test(value)
   },
-  'regular': (value, exp) => {
-    return exp.expression.test(val)
+  'regular': (value, expression) => {
+    return expression.test(value)
   },
   'idcard': (value) => {
     if (isEmpty(value)) return false

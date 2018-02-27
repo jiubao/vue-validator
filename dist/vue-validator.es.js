@@ -54,8 +54,8 @@ var rules = {
     if (isEmpty(value)) { return false }
     return regMobile.test(value)
   },
-  'regular': function (value, exp) {
-    return exp.expression.test(val)
+  'regular': function (value, expression) {
+    return expression.test(value)
   },
   'idcard': function (value) {
     if (isEmpty(value)) { return false }
@@ -158,7 +158,11 @@ function pass (vm) {
 }
 
 function find (id) {
-  return validators.find(function (v) { return String(v.id) === String(id); })
+  for (var i = validators.length - 1; i >= 0; i--) {
+    if ((String(validators[i].id)) === String(id)) { return validators[i] }
+  }
+  return ''
+  // return validators.find(v => String(v.id) === String(id))
 }
 
 function destroy (arg) {
@@ -202,9 +206,14 @@ var directive = {
 }
 
 function getBindingKey (vnode) {
-  if (!vnode || !isArray(vnode.data.directives)) { return '' }
-  var directive = vnode.data.directives.find(function (d) { return d.name === 'model'; });
-  return directive ? directive.expression : ''
+  var directives = vnode.data.directives;
+  if (!vnode || !isArray(directives)) { return '' }
+  for (var i = directives.length - 1; i >= 0; i--) {
+    if (directives[i].name === 'model') { return directives[i].expression }
+  }
+  return ''
+  // var directive = vnode.data.directives.find(d => d.name === 'model')
+  // return directive ? directive.expression : ''
 }
 
 function build (el, binding, vnode) {

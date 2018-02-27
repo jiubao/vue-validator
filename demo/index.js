@@ -40,6 +40,13 @@ var app = new Vue({
     phone: '18737373737',
     address: 'sh',
     description: 'a',
+    expression: '',
+    ruleReg: {
+      rules: [{
+        key: 'regular',
+        value: /^1[3456789]\d{9}$/
+      }]
+    },
     ruleName: {
       required: true
     },

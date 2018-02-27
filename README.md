@@ -1,5 +1,5 @@
 # vue-validator
-* 3.7k before gzipped
+* 3.8k before gzipped
 
 ## Install
 Note: the "vue-validator" on NPM refers to https://github.com/kazupon/vue-validator.

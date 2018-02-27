@@ -18,7 +18,11 @@ function pass (vm) {
 }
 
 function find (id) {
-  return validators.find(v => String(v.id) === String(id))
+  for (var i = validators.length - 1; i >= 0; i--) {
+    if ((String(validators[i].id)) === String(id)) return validators[i]
+  }
+  return ''
+  // return validators.find(v => String(v.id) === String(id))
 }
 
 function destroy (arg) {

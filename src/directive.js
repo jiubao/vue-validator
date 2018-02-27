@@ -17,9 +17,14 @@ export default {
 }
 
 function getBindingKey (vnode) {
-  if (!vnode || !isArray(vnode.data.directives)) return ''
-  var directive = vnode.data.directives.find(d => d.name === 'model')
-  return directive ? directive.expression : ''
+  var directives = vnode.data.directives
+  if (!vnode || !isArray(directives)) return ''
+  for (var i = directives.length - 1; i >= 0; i--) {
+    if (directives[i].name === 'model') return directives[i].expression
+  }
+  return ''
+  // var directive = vnode.data.directives.find(d => d.name === 'model')
+  // return directive ? directive.expression : ''
 }
 
 function build (el, binding, vnode) {
