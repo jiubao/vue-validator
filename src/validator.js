@@ -1,5 +1,5 @@
 import allRules from './rules'
-import {on, off, emptyFn, getBindingValue, prop} from './utils'
+import {on, off, emptyFn, getBindingValue, prop, isEmpty} from './utils'
 import config from './config'
 import factory from './factory'
 
@@ -36,11 +36,15 @@ export default class Validator {
 
   validate (trigger) {
     var val = this.getValue()
-    this.pass = !this.rules.some(rule => {
-      var result = allRules[rule.key](val, rule.value)
-      // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
-      return !result
-    })
+    if (isEmpty(val) && !this.rules.some(rule => rule.key === 'required')) {
+      this.pass = true
+    } else {
+      this.pass = !this.rules.some(rule => {
+        var result = allRules[rule.key](val, rule.value)
+        // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
+        return !result
+      })
+    }
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this))
     this.vm[config.resultKey] = factory.pass(this.vm)

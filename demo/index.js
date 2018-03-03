@@ -26,6 +26,7 @@ var app = new Vue({
   el: '#app',
   data: {
     show: true,
+    nullableNum: '',
     items: [{
       id: 1,name:'xx'
     }, {

@@ -120,11 +120,15 @@ Validator.prototype.bind = function bind () {
 
 Validator.prototype.validate = function validate (trigger) {
   var val = this.getValue();
-  this.pass = !this.rules.some(function (rule) {
-    var result = rules[rule.key](val, rule.value);
-    // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
-    return !result
-  });
+  if (isEmpty(val) && !this.rules.some(function (rule) { return rule.key === 'required'; })) {
+    this.pass = true;
+  } else {
+    this.pass = !this.rules.some(function (rule) {
+      var result = rules[rule.key](val, rule.value);
+      // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
+      return !result
+    });
+  }
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this));
   this.vm[config.resultKey] = factory.pass(this.vm);

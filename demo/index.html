@@ -19,6 +19,12 @@
           <td>{{validate$pass}}</td>
         </tr>
         <tr>
+          <td>not required & empty & other rules not pass</td>
+          <td>
+            <input v-validator.init="'max:5'" v-model="nullableNum" type="text">
+          </td>
+        </tr>
+        <tr>
           <td>name</td>
           <td>
             <input v-validator:employee$name.init="ruleName" v-model="employee.name" type="text">
