@@ -91,6 +91,20 @@ var app = new Vue({
       rules: [{
         key: 'idcard'
       }]
+    },
+    ruleWithdraw: {
+      rules: [{
+        key: 'decimal',
+        message: '请正确输入金额'
+      }, {
+        key: 'min',
+        value: 50,
+        message: '提现金额不能低于¥50'
+      }, {
+        key: 'max',
+        value: 1000,
+        message: '输入金额超限'
+      }]
     }
   },
   methods: {

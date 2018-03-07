@@ -7,6 +7,9 @@
     .validate-fail {
       border: solid 1px red;
     }
+    input, textarea {
+      outline: 0;
+    }
 
     </style>
   </head>
@@ -17,6 +20,18 @@
         <tr>
           <td>result</td>
           <td>{{validate$pass}}</td>
+        </tr>
+        <tr>
+          <td>withdraw</td>
+          <td>
+            <input type="text" v-validator="ruleWithdraw">
+          </td>
+        </tr>
+        <tr>
+          <td>decimal</td>
+          <td>
+            <input type="text" v-validator="'decimal'">
+          </td>
         </tr>
         <tr>
           <td>not required & empty & other rules not pass</td>

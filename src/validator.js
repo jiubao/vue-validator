@@ -13,6 +13,7 @@ export default class Validator {
     this.rules = rules || []
     this.key = key
     this.vm = vm
+    this.fails = []
 
     this.pass = false
     this.onError = config.onError || emptyFn
@@ -36,13 +37,16 @@ export default class Validator {
 
   validate (trigger) {
     var val = this.getValue()
+    this.fails = []
     if (isEmpty(val) && !this.rules.some(rule => rule.key === 'required')) {
       this.pass = true
     } else {
       this.pass = !this.rules.some(rule => {
-        var result = allRules[rule.key](val, rule.value)
+        var pass = allRules[rule.key](val, rule.value)
+        if (!pass) this.fails.push(rule)
+
         // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
-        return !result
+        return !pass
       })
     }
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)

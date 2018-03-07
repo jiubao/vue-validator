@@ -1,1 +1,280 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t["vue-validator"]=e()}(this,function(){"use strict";var t={events:["input"],onSuccess:function(){},onError:function(){},resultKey:"validate$pass"},e=Array.isArray,n=function(t){return"string"==typeof t},r=function(t){return null!==t&&"object"==typeof t},i=function(t){return"number"==typeof t},u=function(){};function s(t){return null==t||""===t}function o(t,e,n){e="data-vv-"+e;return 2===arguments.length?t.getAttribute(e):t.setAttribute(e,n)}var a=0;var c=/^1[3456789]\d{9}$/,f=/^\d{15}$/,l=/^\d{17}[\dXx]$/,d=/^[0-9]+$/,v={required:function(t){return!s(t)},mobile:function(t){return!s(t)&&c.test(t)},regular:function(t,e){return e.test(t)},idcard:function(t){return!s(t)&&(f.test(t)||l.test(t))},number:function(t){return d.test(String(t))},max:function(t,e){return!s(t)&&Number(t)<=e},min:function(t,e){return!s(t)&&Number(t)>=e},max_length:function(t,e){return s(t)?e>=0:String(t).length<=e},min_length:function(t,e){return s(t)?e<=0:String(t).length>=e}},h=["INPUT","TEXTAREA","SELECT"],p=function(e,n,r,i,s,a){var c=this;this.id=e,this.el=n,o(n,"id",this.id),this.rules=r||[],this.key=i,this.vm=s,this.pass=!1,this.onError=t.onError||u,this.onSuccess=t.onSuccess||u,this.validate(a),this._validate=function(){return c.validate()},this.bind()};p.prototype.bind=function(){var e=this;this.key?this.unwatch=this.vm.$watch(this.key,this._validate):h.indexOf(this.el.tagName)>=0&&t.events.forEach(function(t){var n,r,i;n=e.el,r=t,i=e._validate,n.addEventListener(r,i,!1)})},p.prototype.validate=function(e){var n=this.getValue();return s(n)&&!this.rules.some(function(t){return"required"===t.key})?this.pass=!0:this.pass=!this.rules.some(function(t){return!v[t.key](n,t.value)}),!1!==e&&(this.pass?this.onSuccess(this):this.onError(this)),this.vm[t.resultKey]=b.pass(this.vm),this.pass},p.prototype.getValue=function(){return this.key&&this.vm?(t=this.vm,this.key.split(".").reduce(function(t,e,n,r){return t[e]},t)):this.el.value;var t},p.prototype.destroy=function(){var e=this;this.unwatch&&this.unwatch(),this.el&&t.events.forEach(function(t){return n=e.el,r=t,i=e._validate,void n.removeEventListener(r,i,!1);var n,r,i}),this.el=this.vm=this._validate=null};var y=[];function m(t){return t?y.filter(function(e){return e.vm===t}):y}function g(t){return!m(t).some(function(t){return!t.pass})}function E(t){for(var e=y.length-1;e>=0;e--)if(String(y[e].id)===String(t))return y[e];return""}var b={add:function(e,n,r,i,u){y.push(new p(a++,e,n,r,i,u)),i[t.resultKey]=g(i)},all:m,pass:g,find:E,destroy:function t(e){if(i(e))y.splice(e,1)[0].destroy();else if(n(e))t(y.indexOf(E(e)));else if(e instanceof p)t(y.indexOf(e));else for(var r=y.length-1;r>=0;r--)e&&e!==y[r].vm||t(r)}},S={data:function(){var e;return(e={})[t.resultKey]=!1,e},beforeDestroy:function(){b.destroy(this)}},x={bind:function(t,e,n){k(t,e,n)},update:function(t,e,n){e.value!==e.oldValue&&(b.destroy(o(t,"id")),k(t,e,n))},unbind:function(t){var e=b.find(o(t,"id"));e&&e.destroy()}};function k(t,i,u){var a=[];r(i.value)?(a=i.value.rules||[],i.value.required&&a.unshift({key:"required"})):n(i.value)&&!s(i.value)&&i.value.split("|").forEach(function(t){var e=t.split(":"),n={key:e[0]};e[1]&&(n.value=e[1]),a.push(n)});var c=o(t,"path")||i.arg&&i.arg.replace(/\$/g,".")||function(t){var n=t.data.directives;if(!t||!e(n))return"";for(var r=n.length-1;r>=0;r--)if("model"===n[r].name)return n[r].expression;return""}(u);b.add(t,a,c,u.context,!!i.modifiers.init)}return{install:function(e,n){var r;n&&(r=(r=n)||{},t.events=r.events||t.events,t.onSuccess=r.onSuccess||t.onSuccess,t.onError=r.onError||t.onError,t.resultKey=r.resultKey||t.resultKey),e.mixin(S),e.directive("validator",x),e.prototype.$$validator=b}}});
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global['vue-validator'] = factory());
+}(this, (function () { 'use strict';
+
+var config = {
+  events: ['input'],
+  onSuccess: function () {},
+  onError: function () {},
+  resultKey: 'validate$pass',
+  errorKey: 'validate$error'
+  // errorClass: 'validate-fail'
+}
+
+var isArray = Array.isArray;
+var isString = function (value) { return typeof value === 'string'; };
+var isObject = function (value) { return value !== null && typeof value === 'object'; };
+var isNumber = function (value) { return typeof value === 'number'; };
+
+var emptyFn = function () {};
+
+function on (element, evt, handler) {
+  element.addEventListener(evt, handler, false);
+}
+
+function off (element, evt, handler) {
+  element.removeEventListener(evt, handler, false);
+}
+
+function isEmpty (val) {
+  return val === undefined || val === null || val === ''
+}
+
+function getBindingValue (vm, key) {
+  return key.split('.').reduce(function (acc, cv, ci, arr) {
+    return acc[cv]
+  }, vm)
+}
+
+function prop (el, key, value) {
+  var key = "data-vv-" + key;
+  return arguments.length === 2 ? el.getAttribute(key) : el.setAttribute(key, value)
+}
+
+var id = 0;
+function uid () {
+  return id++
+}
+
+var regMobile = /^1[3456789]\d{9}$/;
+var regIdcard15 = /^\d{15}$/;
+var regIdcard18 = /^\d{17}[\dXx]$/;
+var regNumber = /^[0-9]+$/;
+var regDecimal = /^-?\d*(\.\d+)?$/;
+
+var rules = {
+  required: function (value) {
+    return !isEmpty(value)
+  },
+  mobile: function (value) {
+    if (isEmpty(value)) { return false }
+    return regMobile.test(value)
+  },
+  'regular': function (value, expression) {
+    return expression.test(value)
+  },
+  'idcard': function (value) {
+    if (isEmpty(value)) { return false }
+    return regIdcard15.test(value) || regIdcard18.test(value)
+  },
+  'number': function (value) {
+    return regNumber.test(String(value));
+  },
+  'decimal': function (value) {
+    return regDecimal.test(value)
+  },
+  'max': function (value, max) {
+    if (isEmpty(value)) { return false }
+    return Number(value) <= max
+  },
+  'min': function (value, min) {
+    if (isEmpty(value)) { return false }
+    return Number(value) >= min
+  },
+  'max_length': function (value, length) {
+    if (isEmpty(value)) { return length >= 0 }
+    return String(value).length <= length
+  },
+  'min_length': function (value, length) {
+    if (isEmpty(value)) { return length <= 0 }
+    return String(value).length >= length
+  }
+};
+
+var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
+
+var Validator = function Validator (id, el, rules$$1, key, vm, init) {
+  var this$1 = this;
+
+  this.id = id;
+  this.el = el;
+  prop(el, 'id', this.id);
+  this.rules = rules$$1 || [];
+  this.key = key;
+  this.vm = vm;
+  this.fails = [];
+
+  this.pass = false;
+  this.onError = config.onError || emptyFn;
+  this.onSuccess = config.onSuccess || emptyFn;
+  this.validate(init);
+  // this._validate = this.validate.bind(this)
+  this._validate = function () { return this$1.validate(); };
+
+  this.bind();
+};
+
+Validator.prototype.bind = function bind () {
+    var this$1 = this;
+
+  if (this.key) {
+    this.unwatch = this.vm.$watch(this.key, this._validate);
+  } else if (formElms.indexOf(this.el.tagName) >= 0) {
+    config.events.forEach(function (evt) {
+      on(this$1.el, evt, this$1._validate);
+    });
+  }
+};
+
+Validator.prototype.validate = function validate (trigger) {
+    var this$1 = this;
+
+  var val = this.getValue();
+  this.fails = [];
+  if (isEmpty(val) && !this.rules.some(function (rule) { return rule.key === 'required'; })) {
+    this.pass = true;
+  } else {
+    this.pass = !this.rules.some(function (rule) {
+      var pass = rules[rule.key](val, rule.value);
+      if (!pass) { this$1.fails.push(rule); }
+
+      // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
+      return !pass
+    });
+  }
+  // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
+  trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this));
+  this.vm[config.resultKey] = factory.pass(this.vm);
+  return this.pass
+};
+
+Validator.prototype.getValue = function getValue () {
+  return this.key && this.vm ? getBindingValue(this.vm, this.key) : this.el.value
+};
+
+Validator.prototype.destroy = function destroy () {
+    var this$1 = this;
+
+  this.unwatch && this.unwatch();
+  this.el && config.events.forEach(function (evt) { return off(this$1.el, evt, this$1._validate); });
+  this.el = this.vm = this._validate = null;
+};
+
+// manage validators by module name
+
+var validators = [];
+
+function add (el, rules$$1, key, vm, init) {
+  validators.push(new Validator(uid(), el, rules$$1, key, vm, init));
+  vm[config.resultKey] = pass(vm);
+}
+
+function all (vm) {
+  return vm ? validators.filter(function (v) { return v.vm === vm; }) : validators
+}
+function pass (vm) {
+  return !all(vm).some(function (v) { return !v.pass; })
+}
+
+function find (id) {
+  for (var i = validators.length - 1; i >= 0; i--) {
+    if ((String(validators[i].id)) === String(id)) { return validators[i] }
+  }
+  return ''
+  // return validators.find(v => String(v.id) === String(id))
+}
+
+function destroy (arg) {
+  if (isNumber(arg)) { validators.splice(arg, 1)[0].destroy(); } // if index, destroy one
+  else if (isString(arg)) { destroy(validators.indexOf(find(arg))); } // if string, destroy by id
+  else if (arg instanceof Validator) { destroy(validators.indexOf(arg)); } // if Validator, destroy one
+  else // if vm, destroy component, if null, destroy all
+    { for (var i = validators.length - 1; i >= 0; i--)
+      { if (!arg || arg === validators[i].vm)
+        { destroy(i); } } }
+}
+
+function addRule (key, fn) {
+  rules[key] = fn;
+}
+
+var factory = {
+  add: add, all: all, pass: pass, find: find, destroy: destroy, addRule: addRule, rules: rules
+}
+
+var mixin = {
+  data: function data () {
+    var obj;
+
+    return ( obj = {}, obj[config.resultKey] = false, obj[config.errorKey] = [], obj)
+  },
+  beforeDestroy: function beforeDestroy () {
+    factory.destroy(this);
+  }
+};
+
+var directive = {
+  bind: function (el, binding, vnode) {
+    build(el, binding, vnode);
+  },
+  update: function (el, binding, vnode) {
+    if (binding.value === binding.oldValue) { return }
+    factory.destroy(prop(el, 'id'));
+    build(el, binding, vnode);
+  },
+  unbind: function (el) {
+    var v = factory.find(prop(el, 'id'));
+    v && v.destroy();
+  }
+}
+
+function getBindingKey (vnode) {
+  var directives = vnode.data.directives;
+  if (!vnode || !isArray(directives)) { return '' }
+  for (var i = directives.length - 1; i >= 0; i--) {
+    if (directives[i].name === 'model') { return directives[i].expression }
+  }
+  return ''
+  // var directive = vnode.data.directives.find(d => d.name === 'model')
+  // return directive ? directive.expression : ''
+}
+
+function build (el, binding, vnode) {
+  var rules = [];
+  if (isObject(binding.value)) {
+    rules = binding.value.rules || [];
+    binding.value.required && rules.unshift({key: 'required'});
+  } else if (isString(binding.value) && !isEmpty(binding.value)) {
+    binding.value.split('|').forEach(function (v) {
+      var vs = v.split(':');
+      var rule = {key: vs[0]};
+      if (vs[1]) { rule.value = vs[1]; }
+      rules.push(rule);
+    });
+  }
+
+  var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
+  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init);
+}
+
+var index = {
+  install: function install (vue, options) {
+    options && config$1(options);
+    vue.mixin(mixin);
+    vue.directive('validator', directive);
+    vue.prototype.$$validator = factory;
+  }
+}
+
+function config$1 (items) {
+  items = items || {};
+  config.events = items.events || config.events;
+  config.onSuccess = items.onSuccess || config.onSuccess;
+  config.onError = items.onError || config.onError, config.resultKey = items.resultKey || config.resultKey;
+}
+
+return index;
+
+})));

@@ -2,7 +2,8 @@ var config = {
   events: ['input'],
   onSuccess: function () {},
   onError: function () {},
-  resultKey: 'validate$pass'
+  resultKey: 'validate$pass',
+  errorKey: 'validate$error'
   // errorClass: 'validate-fail'
 }
 
@@ -45,6 +46,7 @@ var regMobile = /^1[3456789]\d{9}$/;
 var regIdcard15 = /^\d{15}$/;
 var regIdcard18 = /^\d{17}[\dXx]$/;
 var regNumber = /^[0-9]+$/;
+var regDecimal = /^-?\d*(\.\d+)?$/;
 
 var rules = {
   required: function (value) {
@@ -63,6 +65,9 @@ var rules = {
   },
   'number': function (value) {
     return regNumber.test(String(value));
+  },
+  'decimal': function (value) {
+    return regDecimal.test(value)
   },
   'max': function (value, max) {
     if (isEmpty(value)) { return false }
@@ -93,6 +98,7 @@ var Validator = function Validator (id, el, rules$$1, key, vm, init) {
   this.rules = rules$$1 || [];
   this.key = key;
   this.vm = vm;
+  this.fails = [];
 
   this.pass = false;
   this.onError = config.onError || emptyFn;
@@ -117,14 +123,19 @@ Validator.prototype.bind = function bind () {
 };
 
 Validator.prototype.validate = function validate (trigger) {
+    var this$1 = this;
+
   var val = this.getValue();
+  this.fails = [];
   if (isEmpty(val) && !this.rules.some(function (rule) { return rule.key === 'required'; })) {
     this.pass = true;
   } else {
     this.pass = !this.rules.some(function (rule) {
-      var result = rules[rule.key](val, rule.value);
+      var pass = rules[rule.key](val, rule.value);
+      if (!pass) { this$1.fails.push(rule); }
+
       // console.log(`rule: ${rule.key}, value: ${val}, result: ${result}`)
-      return !result
+      return !pass
     });
   }
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
@@ -149,8 +160,8 @@ Validator.prototype.destroy = function destroy () {
 
 var validators = [];
 
-function add (el, rules, key, vm, init) {
-  validators.push(new Validator(uid(), el, rules, key, vm, init));
+function add (el, rules$$1, key, vm, init) {
+  validators.push(new Validator(uid(), el, rules$$1, key, vm, init));
   vm[config.resultKey] = pass(vm);
 }
 
@@ -179,15 +190,19 @@ function destroy (arg) {
         { destroy(i); } } }
 }
 
+function addRule (key, fn) {
+  rules[key] = fn;
+}
+
 var factory = {
-  add: add, all: all, pass: pass, find: find, destroy: destroy
+  add: add, all: all, pass: pass, find: find, destroy: destroy, addRule: addRule, rules: rules
 }
 
 var mixin = {
   data: function data () {
     var obj;
 
-    return ( obj = {}, obj[config.resultKey] = false, obj)
+    return ( obj = {}, obj[config.resultKey] = false, obj[config.errorKey] = [], obj)
   },
   beforeDestroy: function beforeDestroy () {
     factory.destroy(this);

@@ -2,6 +2,7 @@ import mixin from './mixin'
 import directive from './directive'
 import factory from './factory'
 import cfg from './config'
+import rules from './rules'
 
 export default {
   install (vue, options) {

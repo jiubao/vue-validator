@@ -126,8 +126,11 @@ Vue.prototype.$$validator.all()
 * ~~ref factory on Vue.prototype~~
 * ~~initial validate~~
 * ~~directive update~~
-* if change rule obj (not replace), can't reactive the change (bind: value === oldValue)
+* decimal
+* expose rules && add rule
 * error
+* promise validate
+* if change rule obj (not replace), can't reactive the change (bind: value === oldValue)
 * scope validate: scope on component
 * *.es *.umd *.cjs
 * jest

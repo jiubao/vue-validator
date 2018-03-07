@@ -4,6 +4,7 @@ const regMobile = /^1[3456789]\d{9}$/
 const regIdcard15 = /^\d{15}$/
 const regIdcard18 = /^\d{17}[\dXx]$/
 const regNumber = /^[0-9]+$/
+const regDecimal = /^-?\d*(\.\d+)?$/
 
 const rules = {
   required: (value) => {
@@ -22,6 +23,9 @@ const rules = {
   },
   'number': (value) => {
     return regNumber.test(String(value));
+  },
+  'decimal': (value) => {
+    return regDecimal.test(value)
   },
   'max': (value, max) => {
     if (isEmpty(value)) return false

@@ -2,6 +2,7 @@
 import Validator from './validator'
 import {uid, isNumber, isString} from './utils'
 import config from './config'
+import rules from './rules'
 
 const validators = []
 
@@ -35,6 +36,10 @@ function destroy (arg) {
         destroy(i)
 }
 
+function addRule (key, fn) {
+  rules[key] = fn
+}
+
 export default {
-  add, all, pass, find, destroy
+  add, all, pass, find, destroy, addRule, rules
 }
