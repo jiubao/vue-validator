@@ -1,5 +1,5 @@
 import allRules from './rules'
-import {on, off, emptyFn, getBindingValue, prop, isEmpty} from './utils'
+import {on, off, emptyFn, getBindingValue, prop, isEmpty, shallowCopy} from './utils'
 import config from './config'
 import factory from './factory'
 
@@ -14,6 +14,7 @@ export default class Validator {
     this.key = key
     this.vm = vm
     this.fails = []
+    // this.vm[config.errorKey].key = ''
 
     this.pass = false
     this.onError = config.onError || emptyFn
@@ -49,6 +50,7 @@ export default class Validator {
         return !pass
       })
     }
+    this.vm[config.errorKey] = shallowCopy(this.vm[config.errorKey], {[this.key]: this.pass ? '' : this.fails[0].message})
     // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
     trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this))
     this.vm[config.resultKey] = factory.pass(this.vm)

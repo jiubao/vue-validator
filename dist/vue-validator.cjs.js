@@ -5,7 +5,7 @@ var config = {
   onSuccess: function () {},
   onError: function () {},
   resultKey: 'validate$pass',
-  errorKey: 'validate$error'
+  errorKey: 'vverrors'
   // errorClass: 'validate-fail'
 }
 
@@ -42,6 +42,15 @@ function prop (el, key, value) {
 var id = 0;
 function uid () {
   return id++
+}
+
+function shallowCopy () {
+  var arguments$1 = arguments;
+
+  var result = {};
+  for (var i = 0; i < arguments.length; i++)
+    { Object.keys(arguments$1[i]).forEach(function (key) { return result[key] = arguments$1[i][key]; }); }
+  return result
 }
 
 var regMobile = /^1[3456789]\d{9}$/;
@@ -101,6 +110,7 @@ var Validator = function Validator (id, el, rules$$1, key, vm, init) {
   this.key = key;
   this.vm = vm;
   this.fails = [];
+  // this.vm[config.errorKey].key = ''
 
   this.pass = false;
   this.onError = config.onError || emptyFn;
@@ -126,6 +136,7 @@ Validator.prototype.bind = function bind () {
 
 Validator.prototype.validate = function validate (trigger) {
     var this$1 = this;
+    var obj;
 
   var val = this.getValue();
   this.fails = [];
@@ -140,6 +151,7 @@ Validator.prototype.validate = function validate (trigger) {
       return !pass
     });
   }
+  this.vm[config.errorKey] = shallowCopy(this.vm[config.errorKey], ( obj = {}, obj[this.key] = this.pass ? '' : this.fails[0].message, obj));
   // this.pass ? removeClass(this.el, this.errorClass) : addClass(this.el, this.errorClass)
   trigger !== false && (this.pass ? this.onSuccess(this) : this.onError(this));
   this.vm[config.resultKey] = factory.pass(this.vm);
@@ -204,7 +216,7 @@ var mixin = {
   data: function data () {
     var obj;
 
-    return ( obj = {}, obj[config.resultKey] = false, obj[config.errorKey] = [], obj)
+    return ( obj = {}, obj[config.resultKey] = false, obj[config.errorKey] = {}, obj)
   },
   beforeDestroy: function beforeDestroy () {
     factory.destroy(this);

@@ -9,6 +9,7 @@
     }
     input, textarea {
       outline: 0;
+      width: 200px;
     }
 
     </style>
@@ -24,7 +25,8 @@
         <tr>
           <td>withdraw</td>
           <td>
-            <input type="text" v-validator="ruleWithdraw">
+            <input type="text" v-model="withdraw" v-validator="ruleWithdraw">
+            <span>{{vverrors.withdraw}}</span>
           </td>
         </tr>
         <tr>

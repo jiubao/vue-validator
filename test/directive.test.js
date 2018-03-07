@@ -1,5 +1,6 @@
 import directive from '../src/directive'
 
 test('try jest', () => {
-  expect(directive.name).toBe('validator')
+  var a = 'validator'
+  expect(a).toBe('validator')
 })

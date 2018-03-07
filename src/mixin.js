@@ -4,7 +4,7 @@ var mixin = {
   data () {
     return {
       [config.resultKey]: false,
-      [config.errorKey]: []
+      [config.errorKey]: {}
     }
   },
   beforeDestroy () {

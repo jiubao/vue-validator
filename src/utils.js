@@ -32,3 +32,10 @@ var id = 0
 export function uid () {
   return id++
 }
+
+export function shallowCopy () {
+  var result = {}
+  for (var i = 0; i < arguments.length; i++)
+    Object.keys(arguments[i]).forEach(key => result[key] = arguments[i][key])
+  return result
+}

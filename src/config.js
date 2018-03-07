@@ -3,6 +3,6 @@ export default {
   onSuccess: function () {},
   onError: function () {},
   resultKey: 'validate$pass',
-  errorKey: 'validate$error'
+  errorKey: 'vverrors'
   // errorClass: 'validate-fail'
 }
