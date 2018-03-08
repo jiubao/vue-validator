@@ -23,9 +23,17 @@
           <td>{{validate$pass}}</td>
         </tr>
         <tr>
+          <td>error target</td>
+          <td>
+            <input type="text" v-model="etarget" v-validator="ruleETarget">
+            <div id="etargetMsg"> {{vverrors.etarget}} </div>
+          </td>
+        </tr>
+        <tr>
           <td>withdraw</td>
           <td>
             <input type="text" v-model="withdraw" v-validator="ruleWithdraw">
+            <br>
             <span>{{vverrors.withdraw}}</span>
           </td>
         </tr>

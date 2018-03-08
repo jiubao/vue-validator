@@ -42,5 +42,5 @@ function build (el, binding, vnode) {
   }
 
   var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode)
-  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init)
+  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init, binding.value.errorTarget)
 }

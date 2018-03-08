@@ -100,7 +100,7 @@ var rules = {
 
 var formElms = ['INPUT', 'TEXTAREA', 'SELECT'];
 
-var Validator = function Validator (id, el, rules$$1, key, vm, init) {
+var Validator = function Validator (id, el, rules$$1, key, vm, init, errorTarget) {
   var this$1 = this;
 
   this.id = id;
@@ -110,6 +110,7 @@ var Validator = function Validator (id, el, rules$$1, key, vm, init) {
   this.key = key;
   this.vm = vm;
   this.fails = [];
+  this.errorTarget = errorTarget;
   // this.vm[config.errorKey].key = ''
 
   this.pass = false;
@@ -174,8 +175,8 @@ Validator.prototype.destroy = function destroy () {
 
 var validators = [];
 
-function add (el, rules$$1, key, vm, init) {
-  validators.push(new Validator(uid(), el, rules$$1, key, vm, init));
+function add (el, rules$$1, key, vm, init, errorTarget) {
+  validators.push(new Validator(uid(), el, rules$$1, key, vm, init, errorTarget));
   vm[config.resultKey] = pass(vm);
 }
 
@@ -264,7 +265,7 @@ function build (el, binding, vnode) {
   }
 
   var key = prop(el, 'path') || binding.arg && binding.arg.replace(/\$/g, '.') || getBindingKey(vnode);
-  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init);
+  factory.add(el, rules, key, vnode.context, !!binding.modifiers.init, binding.value.errorTarget);
 }
 
 var index = {

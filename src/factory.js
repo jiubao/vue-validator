@@ -6,8 +6,8 @@ import rules from './rules'
 
 const validators = []
 
-function add (el, rules, key, vm, init) {
-  validators.push(new Validator(uid(), el, rules, key, vm, init))
+function add (el, rules, key, vm, init, errorTarget) {
+  validators.push(new Validator(uid(), el, rules, key, vm, init, errorTarget))
   vm[config.resultKey] = pass(vm)
 }
 

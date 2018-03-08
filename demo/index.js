@@ -4,10 +4,10 @@ var errorClass = 'validate-fail'
 Vue.use(validator, {
   // errorClass: 'bln-validate-fail',
   onError: (validatorInstance) => {
-    addClass(validatorInstance.el, errorClass)
+    addClass(validatorInstance.errorTarget ? document.querySelectorAll(validatorInstance.errorTarget)[0] : validatorInstance.el, errorClass)
   },
   onSuccess: (validatorInstance) => {
-    removeClass(validatorInstance.el, errorClass)
+    removeClass(validatorInstance.errorTarget ? document.querySelectorAll(validatorInstance.errorTarget)[0] : validatorInstance.el, errorClass)
   }
 })
 
@@ -26,6 +26,7 @@ var app = new Vue({
   el: '#app',
   data: {
     show: true,
+    etarget: '',
     withdraw: 40,
     nullableNum: '',
     items: [{
@@ -106,6 +107,13 @@ var app = new Vue({
         value: 1000,
         message: '输入金额超限'
       }]
+    },
+    ruleETarget: {
+      rules: [{
+        key: 'decimal',
+        message: 'should be decimal'
+      }],
+      errorTarget: '#etargetMsg'
     }
   },
   methods: {

@@ -45,4 +45,9 @@ const rules = {
   }
 }
 
+// var promisifyRules = Object.keys(rules).reduce((result, next) => {
+//   result[next] = (value, arg) => Promise.resolve(rules[next](value, arg)
+//   return result
+// }, {})
+
 export default rules

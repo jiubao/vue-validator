@@ -6,7 +6,7 @@ import factory from './factory'
 const formElms = ['INPUT', 'TEXTAREA', 'SELECT']
 
 export default class Validator {
-  constructor (id, el, rules, key, vm, init) {
+  constructor (id, el, rules, key, vm, init, errorTarget) {
     this.id = id
     this.el = el
     prop(el, 'id', this.id)
@@ -14,6 +14,7 @@ export default class Validator {
     this.key = key
     this.vm = vm
     this.fails = []
+    this.errorTarget = errorTarget
     // this.vm[config.errorKey].key = ''
 
     this.pass = false
